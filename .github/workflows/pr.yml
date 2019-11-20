@@ -1,0 +1,25 @@
+name: PR
+
+on: pull_request
+
+env:
+  PIPENV_NOSPIN: "true"
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-18.04
+    container:
+      image: python:3.7.4-slim-buster
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Test
+        run: |
+          apt-get update
+          apt-get install -y git
+          git config --global user.name GitHub
+          git config --global user.email github@github.com
+          pip install pipenv
+          pipenv sync --dev --bare
+          pipenv run inv test
