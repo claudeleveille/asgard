@@ -2,7 +2,7 @@
 
 **A**utomated **S**emVer **G**enerator **A**nd **R**elease **D**ispatcher.
 
-A license-compatible Release Manager-replacement.
+A license-compatible Release Manager replacement.
 
 
 ## Contributing
