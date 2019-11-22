@@ -26,11 +26,13 @@ class GitRepo:
         res = self.git("log --pretty='%H'").stdout.decode()
         if res:
             rv = []
-            for line in res.split("\n"):
+            for commit_hash in res.split("\n"):
                 rv.append(
                     {
-                        "hash": line,
-                        "message": self.git(f"show --no-patch --format='%B' {line}")
+                        "hash": commit_hash,
+                        "message": self.git(
+                            f"show --no-patch --format='%B' {commit_hash}"
+                        )
                         .stdout.decode()
                         .strip(),
                     }
