@@ -28,7 +28,7 @@ def test(c):
 
 @task
 def package(c):
-    sh("pyinstaller --onefile --name asgard asgard/app.py")
+    sh("pyinstaller asgard.spec")
     sh(f"docker build --pull --tag {DOCKER_REPO}:{VERSION} .")
 
 

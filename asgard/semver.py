@@ -72,6 +72,12 @@ class SemVer:
     def increment_micro(self):
         self.micro += 1
 
+    @classmethod
+    def isvalid(cls, subject):
+        if re.match(cls.regex_pattern, subject):
+            return True
+        return False
+
     def __repr__(self):
         rv = f"{self.major}.{self.minor}.{self.micro}"
         if self.suffix_dash_prefix:
