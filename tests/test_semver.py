@@ -172,3 +172,21 @@ def test_fromstr(param):
 def test_bad_param_in_fromstr_raises_valueerror(param):
     with pytest.raises(ValueError):
         SemVer.fromstr(param)
+
+
+@pytest.mark.parametrize(
+    "subject,isvalid",
+    [
+        ("1.0.0", True),
+        ("1.13.123", True),
+        ("234.2.2rc3", True),
+        ("23.24.2-rc.3", True),
+        ("23.2.2-rc2", True),
+        ("024.242.2", False),
+        ("-2.23.2", False),
+        ("234,234.24", False),
+        ("", False),
+    ],
+)
+def test_isvalid_method(subject, isvalid):
+    assert SemVer.isvalid(subject) == isvalid
