@@ -70,3 +70,19 @@ def test_commiting_files(message):
         g.add()
         g.commit(message)
         assert g.log()[0]["message"] == message
+
+
+@pytest.mark.parametrize(
+    "message,tag",
+    [
+        ("feat: initial commit", "1.0.0"),
+        ("test: test", "test-tag"),
+        ("fix: something broken", "hello"),
+    ],
+)
+def test_tagging(message, tag):
+    with GitRepo() as g:
+        g.commit(message, allow_empty=True)
+        g.tag(tag)
+        l = g.log()[0]
+        assert l["message"] == message and l["tag"] == tag

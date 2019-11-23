@@ -31,21 +31,24 @@ class GitRepo:
             commit_opts += "--allow-empty"
         self.git(f"commit {commit_opts} --file=-", stdin_str=message.encode())
 
+    def tag(self, tag):
+        self.git(f"tag {tag}")
+
     def log(self):
         res = self.git("log --pretty='%H'").stdout.decode()
         if res:
             rv = []
             for commit_hash in res.split("\n"):
-                rv.append(
-                    {
-                        "hash": commit_hash,
-                        "message": self.git(
-                            f"show --no-patch --format='%B' {commit_hash}"
-                        )
-                        .stdout.decode()
-                        .strip(),
-                    }
-                )
+                commit_dict = {
+                    "hash": commit_hash,
+                    "message": self.git(f"show --no-patch --format='%B' {commit_hash}")
+                    .stdout.decode()
+                    .strip(),
+                }
+                commit_describe = self.git(f"describe --tags {commit_hash}")
+                if commit_describe.returncode == 0:
+                    commit_dict["tag"] = commit_describe.stdout.decode().strip()
+                rv.append(commit_dict)
             return tuple(rv)
         else:
             return ()
