@@ -2,7 +2,7 @@ import pytest
 
 from asgard.git import GitRepo
 from asgard.semver import SemVer
-from asgard.app import main, parse_args, infer_vnext, any_tags
+from asgard.app import main, parse_args, infer_vnext, get_latest_tag_index
 
 
 @pytest.mark.parametrize(
@@ -62,18 +62,6 @@ def test_passing_help_flag_shows_usage(args, capsys):
     assert "usage: " in c.out
 
 
-def test_any_tags_without_tags():
-    with GitRepo() as g:
-        assert any_tags(g.log()) == False
-
-
-def test_any_tags_with_tags():
-    with GitRepo() as g:
-        g.commit("test", allow_empty=True)
-        g.tag("test")
-        assert any_tags(g.log()) == True
-
-
 @pytest.mark.parametrize(
     "suffix,suffix_dot_suffix,suffix_dash_prefix,semver",
     [
@@ -115,3 +103,26 @@ def test_infers_first_version(suffix, suffix_dot_suffix, suffix_dash_prefix, sem
             )
             == semver
         )
+
+
+def test_infers_major_bump_correctly():
+    with GitRepo() as g:
+        g.commit("feat: initial commit", allow_empty=True)
+        g.tag("1.1.0")
+        g.commit("feat: breaking\nBREAKING CHANGE: breaking", allow_empty=True)
+        assert infer_vnext(
+            g.log(), suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=False
+        ) == SemVer(2, 0, 0)
+        g.commit("feat: test\nBREAKING CHANGE: test", allow_empty=True)
+        g.tag("2.0.0")
+        assert infer_vnext(
+            g.log(), suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=False
+        ) == SemVer(3, 0, 0)
+
+
+def test_get_latest_tag_index():
+    with GitRepo() as g:
+        g.commit("test: test", allow_empty=True)
+        g.commit("test: test2", allow_empty=True)
+        g.tag("1.0.0")
+        assert get_latest_tag_index(g.log()) == 1

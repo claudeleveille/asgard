@@ -3,6 +3,7 @@ import sys
 
 from asgard._version import __version__
 from asgard.semver import SemVer
+from asgard.conventionalcommits import ConventionalCommitMsg
 
 
 def main(args=sys.argv[1:]):
@@ -26,15 +27,16 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def any_tags(log):
-    for i in log:
-        if "tag" in i.keys():
-            return True
-    return False
+def get_latest_tag_index(log):
+    latest = None
+    for i in range(len(log)):
+        if "tag" in log[i].keys():
+            latest = i
+    return latest
 
 
 def infer_vnext(log, suffix, suffix_dot_suffix, suffix_dash_prefix):
-    if not any_tags(log):
+    if get_latest_tag_index(log) == None:
         if suffix:
             return SemVer(
                 0,
@@ -47,3 +49,10 @@ def infer_vnext(log, suffix, suffix_dot_suffix, suffix_dash_prefix):
             )
         else:
             return SemVer(0, 1, 0)
+    else:
+        lti = get_latest_tag_index(log)
+        version = SemVer.fromstr(log[lti]["tag"])
+        for l in log[lti:]:
+            if ConventionalCommitMsg(l["message"]).msg_type == "BREAKING CHANGE":
+                version.increment_major()
+                return version
