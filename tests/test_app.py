@@ -15,14 +15,10 @@ def test_flags(flag):
     assert vars(a)[attr] == True and vars(a_defaults)[attr] == False
 
 
-def test_default_prerelease_suffix():
-    a = parse_args([])
-    assert a.prerelease_suffix == ""
-
-
 @pytest.mark.parametrize(
     "args,value",
     [
+        ([], ""),
         (["--prerelease-suffix=hello"], "hello"),
         (["--prerelease-suffix", "hello"], "hello"),
     ],
