@@ -35,8 +35,9 @@ def get_latest_tag_index(log):
     return latest
 
 
-def infer_vnext(log, suffix, suffix_dot_suffix, suffix_dash_prefix):
-    if get_latest_tag_index(log) == None:
+def infer_vnext(log, suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=False):
+    latest_tag_index = get_latest_tag_index(log)
+    if latest_tag_index == None:
         if suffix:
             return SemVer(
                 0,
@@ -50,9 +51,21 @@ def infer_vnext(log, suffix, suffix_dot_suffix, suffix_dash_prefix):
         else:
             return SemVer(0, 1, 0)
     else:
-        lti = get_latest_tag_index(log)
-        version = SemVer.fromstr(log[lti]["tag"])
-        for l in log[lti:]:
-            if ConventionalCommitMsg(l["message"]).msg_type == "BREAKING CHANGE":
-                version.increment_major()
-                return version
+        version = SemVer.fromstr(log[latest_tag_index]["tag"])
+        if latest_tag_index == len(log) - 1:
+            version.increment_micro()
+            return version
+        major_bump, minor_bump = False, False
+        for commit in log[latest_tag_index + 1 :]:
+            cc_msg_type = ConventionalCommitMsg(commit["message"]).msg_type
+            if cc_msg_type == "BREAKING CHANGE":
+                major_bump = True
+            elif cc_msg_type == "feat":
+                minor_bump = True
+        if major_bump:
+            version.increment_major()
+        elif minor_bump:
+            version.increment_minor()
+        else:
+            version.increment_micro()
+        return version

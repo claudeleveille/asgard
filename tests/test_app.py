@@ -110,14 +110,29 @@ def test_infers_major_bump_correctly():
         g.commit("feat: initial commit", allow_empty=True)
         g.tag("1.1.0")
         g.commit("feat: breaking\nBREAKING CHANGE: breaking", allow_empty=True)
-        assert infer_vnext(
-            g.log(), suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=False
-        ) == SemVer(2, 0, 0)
-        g.commit("feat: test\nBREAKING CHANGE: test", allow_empty=True)
+        assert infer_vnext(g.log()) == SemVer(2, 0, 0)
         g.tag("2.0.0")
-        assert infer_vnext(
-            g.log(), suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=False
-        ) == SemVer(3, 0, 0)
+        g.commit("feat: test\nBREAKING CHANGE: test", allow_empty=True)
+        assert infer_vnext(g.log()) == SemVer(3, 0, 0)
+
+
+def test_infers_minor_bump_correctly():
+    with GitRepo() as g:
+        g.commit("chore: initial commit", allow_empty=True)
+        g.tag("0.1.0")
+        g.commit("feat: test", allow_empty=True)
+        assert infer_vnext(g.log()) == SemVer(0, 2, 0)
+
+
+def test_infers_micro_bump_correctly():
+    with GitRepo() as g:
+        g.commit("feat: initial commit", allow_empty=True)
+        g.tag("0.1.0")
+        assert infer_vnext(g.log()) == SemVer(0, 1, 1)
+        g.commit("chore: test", allow_empty=True)
+        g.tag("0.1.1")
+        g.commit("fix: test", allow_empty=True)
+        assert infer_vnext(g.log()) == SemVer(0, 1, 2)
 
 
 def test_get_latest_tag_index():
