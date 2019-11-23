@@ -45,7 +45,9 @@ class GitRepo:
                     .stdout.decode()
                     .strip(),
                 }
-                commit_describe = self.git(f"describe --tags {commit_hash}")
+                commit_describe = self.git(
+                    f"describe --tags --exact-match {commit_hash}"
+                )
                 if commit_describe.returncode == 0:
                     commit_dict["tag"] = commit_describe.stdout.decode().strip()
                 log.append(commit_dict)
