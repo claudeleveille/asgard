@@ -2,6 +2,7 @@ import argparse
 import sys
 
 from asgard._version import __version__
+from asgard.semver import SemVer
 
 
 def main(args=sys.argv[1:]):
@@ -32,6 +33,17 @@ def any_tags(log):
     return False
 
 
-def infer_vnext(log):
+def infer_vnext(log, suffix, suffix_dot_suffix, suffix_dash_prefix):
     if not any_tags(log):
-        return "0.1.0"
+        if suffix:
+            return SemVer(
+                0,
+                1,
+                0,
+                suffix=suffix,
+                suffix_number=1,
+                suffix_dot_suffix=suffix_dot_suffix,
+                suffix_dash_prefix=suffix_dash_prefix,
+            )
+        else:
+            return SemVer(0, 1, 0)

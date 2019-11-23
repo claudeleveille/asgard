@@ -74,9 +74,44 @@ def test_any_tags_with_tags():
         assert any_tags(g.log()) == True
 
 
-def test_infers_first_version():
+@pytest.mark.parametrize(
+    "suffix,suffix_dot_suffix,suffix_dash_prefix,semver",
+    [
+        (None, False, False, SemVer(0, 1, 0)),
+        ("rc", False, False, SemVer(0, 1, 0, suffix="rc", suffix_number=1)),
+        (
+            "rc",
+            False,
+            True,
+            SemVer(0, 1, 0, suffix="rc", suffix_number=1, suffix_dash_prefix=True),
+        ),
+        (
+            "rc",
+            True,
+            True,
+            SemVer(
+                0,
+                1,
+                0,
+                suffix="rc",
+                suffix_number=1,
+                suffix_dash_prefix=True,
+                suffix_dot_suffix=True,
+            ),
+        ),
+    ],
+)
+def test_infers_first_version(suffix, suffix_dot_suffix, suffix_dash_prefix, semver):
     with GitRepo() as g:
         g.commit("test: test", allow_empty=True)
         g.commit("feat: test2", allow_empty=True)
         g.commit("feat: test3\nBREAKING CHANGE: test", allow_empty=True)
-        assert infer_vnext(g.log()) == "0.1.0"
+        assert (
+            infer_vnext(
+                g.log(),
+                suffix=suffix,
+                suffix_dot_suffix=suffix_dot_suffix,
+                suffix_dash_prefix=suffix_dash_prefix,
+            )
+            == semver
+        )
