@@ -23,3 +23,15 @@ def parse_args(args):
     parser.add_argument("--prerelease-suffix", default="")
 
     return parser.parse_args(args)
+
+
+def any_tags(log):
+    for i in log:
+        if "tag" in i.keys():
+            return True
+    return False
+
+
+def infer_vnext(log):
+    if not any_tags(log):
+        return "0.1.0"
