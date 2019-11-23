@@ -32,13 +32,11 @@ def test_log_on_empty_repo():
 def test_log_with_some_commits():
     messages = ("test: test1", "test: test2", "test: test3")
     with GitRepo() as g:
-        for message in messages:
-            g.git(f"commit --allow-empty --message='{message}'")
+        for m in messages:
+            g.commit(m, allow_empty=True)
         l = g.log()
-        message_rl = list(messages)
-        message_rl.reverse()
         for i in range(len(messages)):
-            assert message_rl[i] == l[i]["message"]
+            assert messages[i] == l[i]["message"]
 
 
 @pytest.mark.parametrize(

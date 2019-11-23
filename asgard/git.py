@@ -35,9 +35,9 @@ class GitRepo:
         self.git(f"tag {tag}")
 
     def log(self):
-        res = self.git("log --pretty='%H'").stdout.decode()
+        res = self.git("log --pretty='%H'").stdout.decode().strip()
         if res:
-            rv = []
+            log = []
             for commit_hash in res.split("\n"):
                 commit_dict = {
                     "hash": commit_hash,
@@ -48,8 +48,9 @@ class GitRepo:
                 commit_describe = self.git(f"describe --tags {commit_hash}")
                 if commit_describe.returncode == 0:
                     commit_dict["tag"] = commit_describe.stdout.decode().strip()
-                rv.append(commit_dict)
-            return tuple(rv)
+                log.append(commit_dict)
+            log.reverse()
+            return tuple(log)
         else:
             return ()
 
