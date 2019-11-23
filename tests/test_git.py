@@ -1,6 +1,8 @@
 import os
 from tempfile import TemporaryDirectory
 
+import pytest
+
 from asgard.git import GitRepo
 
 
@@ -37,3 +39,34 @@ def test_log_with_some_commits():
         message_rl.reverse()
         for i in range(len(messages)):
             assert message_rl[i] == l[i]["message"]
+
+
+@pytest.mark.parametrize(
+    "message",
+    [
+        "feat: thing\nBREAKING CHANGE: hello",
+        "test: test",
+        "chore: somthing\nsomething else\n\nyet another thing",
+    ],
+)
+def test_commiting(message):
+    with GitRepo() as g:
+        g.commit(message, allow_empty=True)
+        assert g.log()[0]["message"] == message
+
+
+@pytest.mark.parametrize(
+    "message",
+    [
+        "feat: thing\nBREAKING CHANGE: hello",
+        "test: test",
+        "chore: somthing\nsomething else\n\nyet another thing",
+    ],
+)
+def test_commiting_files(message):
+    with GitRepo() as g:
+        with open(g.repo_path + "/test", "w") as f:
+            f.write("")
+        g.add()
+        g.commit(message)
+        assert g.log()[0]["message"] == message

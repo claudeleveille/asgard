@@ -22,6 +22,15 @@ class GitRepo:
             cwd=self.repo_path,
         )
 
+    def add(self, path="."):
+        self.git(f"add {path}")
+
+    def commit(self, message, allow_empty=False):
+        commit_opts = ""
+        if allow_empty:
+            commit_opts += "--allow-empty"
+        self.git(f"commit {commit_opts} --file=-", stdin_str=message.encode())
+
     def log(self):
         res = self.git("log --pretty='%H'").stdout.decode()
         if res:
