@@ -79,5 +79,4 @@ def test_infers_first_version():
         g.commit("test: test", allow_empty=True)
         g.commit("feat: test2", allow_empty=True)
         g.commit("feat: test3\nBREAKING CHANGE: test", allow_empty=True)
-        l = g.log()
-    assert infer_vnext(l) == "0.1.0"
+        assert infer_vnext(g.log()) == "0.1.0"
