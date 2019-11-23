@@ -124,5 +124,6 @@ def test_get_latest_tag_index():
     with GitRepo() as g:
         g.commit("test: test", allow_empty=True)
         g.commit("test: test2", allow_empty=True)
+        assert get_latest_tag_index(g.log()) == None
         g.tag("1.0.0")
         assert get_latest_tag_index(g.log()) == 1
