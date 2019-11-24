@@ -31,7 +31,7 @@ class SemVer:
         self.suffix_dash_prefix = suffix_dash_prefix
         self.suffix = suffix
         self.suffix_dot_suffix = suffix_dot_suffix
-        self._suffix_number = suffix_number
+        self.suffix_number = suffix_number
 
     @classmethod
     def fromstr(cls, str):
@@ -49,7 +49,7 @@ class SemVer:
         if s.group(7):
             suffix_dot_suffix = True
         if s.group(8):
-            suffix_number = s.group(8)
+            suffix_number = int(s.group(8))
         return cls(
             major=s.group(1),
             minor=s.group(2),
@@ -59,13 +59,6 @@ class SemVer:
             suffix_dot_suffix=suffix_dot_suffix,
             suffix_number=suffix_number,
         )
-
-    @property
-    def suffix_number(self):
-        if isinstance(self._suffix_number, str):
-            return int(self._suffix_number)
-        else:
-            return self._suffix_number
 
     def increment_major(self):
         self.major += 1
@@ -80,12 +73,7 @@ class SemVer:
         self.micro += 1
 
     def increment_suffix_number(self):
-        if isinstance(self._suffix_number, int):
-            self._suffix_number += 1
-        else:
-            raise ValueError(
-                "Tried to increment suffix_number when it was set to None."
-            )
+        self.suffix_number += 1
 
     def isprerelease(self):
         if self.suffix != None:

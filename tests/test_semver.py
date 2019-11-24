@@ -266,6 +266,6 @@ def test_increment_suffix_number():
     assert s == "0.1.0test2"
 
 
-def test_increment_suffix_number_raises_valueerror_when_none():
-    with pytest.raises(ValueError):
+def test_increment_suffix_number_raises_typeerror_when_none():
+    with pytest.raises(TypeError):
         SemVer().increment_suffix_number()
