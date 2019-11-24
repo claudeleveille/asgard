@@ -31,7 +31,7 @@ class SemVer:
         self.suffix_dash_prefix = suffix_dash_prefix
         self.suffix = suffix
         self.suffix_dot_suffix = suffix_dot_suffix
-        self.suffix_number = suffix_number
+        self._suffix_number = suffix_number
 
     @classmethod
     def fromstr(cls, str):
@@ -59,6 +59,13 @@ class SemVer:
             suffix_dot_suffix=suffix_dot_suffix,
             suffix_number=suffix_number,
         )
+
+    @property
+    def suffix_number(self):
+        if isinstance(self._suffix_number, str):
+            return int(self._suffix_number)
+        else:
+            return self._suffix_number
 
     def increment_major(self):
         self.major += 1

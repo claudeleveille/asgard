@@ -144,6 +144,37 @@ def test_fromstr(param):
 
 
 @pytest.mark.parametrize(
+    "param,major,minor,micro,suffix_dash_prefix,suffix,suffix_dot_suffix,suffix_number",
+    [
+        ("0.1.0", 0, 1, 0, False, None, False, None),
+        ("0.1.0rc1", 0, 1, 0, False, "rc", False, 1),
+        ("0.1.0-rc1", 0, 1, 0, True, "rc", False, 1),
+        ("0.1.0-rc.1", 0, 1, 0, True, "rc", True, 1),
+        ("10.13.1rc.11", 10, 13, 1, False, "rc", True, 11),
+    ],
+)
+def test_fromstr_parses_correctly(
+    param,
+    major,
+    minor,
+    micro,
+    suffix_dash_prefix,
+    suffix,
+    suffix_dot_suffix,
+    suffix_number,
+):
+    s = SemVer.fromstr(param)
+    assert s.major == major
+    assert s.minor == minor
+    assert s.micro == micro
+    assert s.suffix_dash_prefix == suffix_dash_prefix
+    assert s.suffix == suffix
+    assert s.suffix_dot_suffix == suffix_dot_suffix
+    assert s.suffix_number == suffix_number
+    assert s == param
+
+
+@pytest.mark.parametrize(
     "param",
     [
         "-1.1.1",
