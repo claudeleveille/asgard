@@ -79,6 +79,11 @@ class SemVer:
     def increment_micro(self):
         self.micro += 1
 
+    def isprerelease(self):
+        if self.suffix != None:
+            return True
+        return False
+
     @classmethod
     def isvalid(cls, subject):
         if re.match(cls.regex_pattern, subject):

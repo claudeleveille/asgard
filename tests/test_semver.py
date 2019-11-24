@@ -241,3 +241,19 @@ def test_bad_param_in_fromstr_raises_valueerror(param):
 )
 def test_isvalid_method(subject, isvalid):
     assert SemVer.isvalid(subject) == isvalid
+
+
+@pytest.mark.parametrize(
+    "version,isprerelease",
+    [
+        ("0.1.0", False),
+        ("131.13.2525", False),
+        ("10.13.2rc234", True),
+        ("2.0.2-rc2", True),
+        ("2.24.4-alpha2", True),
+        ("2.2.2r.52", True),
+        ("2.67.4-beta.24", True),
+    ],
+)
+def test_isprelease(version, isprerelease):
+    assert SemVer.fromstr(version).isprerelease() == isprerelease
