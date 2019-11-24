@@ -52,6 +52,14 @@ def infer_vnext(log, suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=Fa
             return SemVer(0, 1, 0)
     else:
         version = SemVer.fromstr(log[latest_tag_index]["tag"])
+        if (
+            version.isprerelease()
+            and version.suffix_dash_prefix == suffix_dash_prefix
+            and version.suffix == suffix
+            and version.suffix_dot_suffix == suffix_dot_suffix
+        ):
+            version.increment_suffix_number()
+            return version
         if latest_tag_index == len(log) - 1:
             version.increment_micro()
             return version

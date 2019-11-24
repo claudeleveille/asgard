@@ -142,3 +142,13 @@ def test_get_latest_tag_index():
         assert get_latest_tag_index(g.log()) == None
         g.tag("1.0.0")
         assert get_latest_tag_index(g.log()) == 1
+
+
+def test_inference_with_suffixes():
+    with GitRepo() as g:
+        g.commit("feat: initial commit", allow_empty=True)
+        g.tag("0.1.0rc1")
+        g.commit("fix: test", allow_empty=True)
+        assert infer_vnext(g.log(), suffix="rc") == "0.1.0rc2"
+        g.tag("0.1.0rc2")
+        assert infer_vnext(g.log(), suffix="rc") == "0.1.0rc3"
