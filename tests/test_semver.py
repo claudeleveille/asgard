@@ -257,3 +257,15 @@ def test_isvalid_method(subject, isvalid):
 )
 def test_isprelease(version, isprerelease):
     assert SemVer.fromstr(version).isprerelease() == isprerelease
+
+
+def test_increment_suffix_number():
+    s = SemVer(0, 1, 0, suffix="test", suffix_number=1)
+    assert s == "0.1.0test1"
+    s.increment_suffix_number()
+    assert s == "0.1.0test2"
+
+
+def test_increment_suffix_number_raises_valueerror_when_none():
+    with pytest.raises(ValueError):
+        SemVer().increment_suffix_number()

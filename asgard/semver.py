@@ -79,6 +79,14 @@ class SemVer:
     def increment_micro(self):
         self.micro += 1
 
+    def increment_suffix_number(self):
+        if isinstance(self._suffix_number, int):
+            self._suffix_number += 1
+        else:
+            raise ValueError(
+                "Tried to increment suffix_number when it was set to None."
+            )
+
     def isprerelease(self):
         if self.suffix != None:
             return True
