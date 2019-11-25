@@ -174,3 +174,23 @@ def test_main_first_version_with_suffix(capsys):
         main(["--repo-path", g.repo_path, "--prerelease-suffix", "rc"])
     c = capsys.readouterr()
     assert c.out == "0.1.0rc1\n"
+
+
+def test_main_release_commit_and_tag(capsys):
+    with GitRepo() as g:
+        g.commit("feat: initial commit", allow_empty=True)
+        main(["--repo-path", g.repo_path, "--commit", "--tag"])
+        c = capsys.readouterr()
+        assert c.out == "0.1.0\n"
+        assert g.log()[1]["message"] == "release: 0.1.0"
+        assert g.log()[1]["tag"] == "v0.1.0"
+
+
+def test_main_release_tag_no_commit(capsys):
+    with GitRepo() as g:
+        g.commit("feat: initial commit", allow_empty=True)
+        main(["--repo-path", g.repo_path, "--tag"])
+        c = capsys.readouterr()
+        assert c.out == "0.1.0\n"
+        assert g.log()[0]["message"] == "feat: initial commit"
+        assert g.log()[0]["tag"] == "v0.1.0"

@@ -20,14 +20,17 @@ def main(args=sys.argv[1:]):
     if len(g.log()) == 0:
         raise ValueError(f"No commits found in git repo at {a.repo_path}.")
 
-    print(
-        infer_vnext(
-            g.log(),
-            suffix=a.prerelease_suffix,
-            suffix_dash_prefix=a.suffix_dash_prefix,
-            suffix_dot_suffix=a.suffix_dot_suffix,
-        )
+    vnext = infer_vnext(
+        g.log(),
+        suffix=a.prerelease_suffix,
+        suffix_dash_prefix=a.suffix_dash_prefix,
+        suffix_dot_suffix=a.suffix_dot_suffix,
     )
+    print(vnext)
+    if a.commit:
+        g.commit(f"release: {vnext}", allow_empty=True)
+    if a.tag:
+        g.tag(f"v{vnext}")
 
 
 def parse_args(args):
