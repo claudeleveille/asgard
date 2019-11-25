@@ -152,3 +152,25 @@ def test_inference_with_suffixes():
         assert infer_vnext(g.log(), suffix="rc") == "0.1.0rc2"
         g.tag("0.1.0rc2")
         assert infer_vnext(g.log(), suffix="rc") == "0.1.0rc3"
+
+
+def test_main_with_empty_repo():
+    with GitRepo() as g:
+        with pytest.raises(ValueError):
+            main(["--repo-path", g.repo_path])
+
+
+def test_main_first_version(capsys):
+    with GitRepo() as g:
+        g.commit("feat: initial commit", allow_empty=True)
+        main(["--repo-path", g.repo_path])
+    c = capsys.readouterr()
+    assert c.out == "0.1.0\n"
+
+
+def test_main_first_version_with_suffix(capsys):
+    with GitRepo() as g:
+        g.commit("feat: initial commit", allow_empty=True)
+        main(["--repo-path", g.repo_path, "--prerelease-suffix", "rc"])
+    c = capsys.readouterr()
+    assert c.out == "0.1.0rc1\n"

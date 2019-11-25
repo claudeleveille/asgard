@@ -1,7 +1,9 @@
 import argparse
+import os
 import sys
 
 from asgard._version import __version__
+from asgard.git import GitRepo
 from asgard.semver import SemVer
 from asgard.conventionalcommits import ConventionalCommitMsg
 
@@ -13,6 +15,20 @@ def main(args=sys.argv[1:]):
         print(__version__)
         sys.exit(0)
 
+    g = GitRepo(a.repo_path)
+
+    if len(g.log()) == 0:
+        raise ValueError(f"No commits found in git repo at {a.repo_path}.")
+
+    print(
+        infer_vnext(
+            g.log(),
+            suffix=a.prerelease_suffix,
+            suffix_dash_prefix=a.suffix_dash_prefix,
+            suffix_dot_suffix=a.suffix_dot_suffix,
+        )
+    )
+
 
 def parse_args(args):
     parser = argparse.ArgumentParser()
@@ -23,6 +39,7 @@ def parse_args(args):
     parser.add_argument("--suffix-dash-prefix", action="store_true", default=False)
     parser.add_argument("--version", action="store_true", default=False)
     parser.add_argument("--prerelease-suffix", default="")
+    parser.add_argument("--repo-path", default=os.getcwd())
 
     return parser.parse_args(args)
 
