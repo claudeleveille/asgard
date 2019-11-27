@@ -27,9 +27,10 @@ def test(c):
 
 
 @task
-def package(c):
+def build(c, docker=False):
     sh("pyinstaller asgard.spec")
-    sh(f"docker build --pull --tag {DOCKER_REPO}:{VERSION} .")
+    if docker:
+        sh(f"docker build --pull --tag {DOCKER_REPO}:{VERSION} .")
 
 
 @task
