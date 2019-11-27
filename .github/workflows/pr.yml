@@ -17,10 +17,13 @@ jobs:
       - name: Test
         run: |
           apt-get update
-          apt-get install -y git
+          apt-get install -y --no-install-recommends \
+            build-essential \
+            git \
+            openssh-client
           git --version
           git config --global user.name GitHub
           git config --global user.email github@github.com
           pip install pipenv
-          pipenv sync --dev --bare
-          pipenv run inv test
+          pipenv sync --dev
+          pipenv run inv check build test
