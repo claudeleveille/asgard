@@ -15,6 +15,9 @@ jobs:
     container:
       image: python:3.7.4-slim-buster
     steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
       - name: Build Binary
         run: |
           pip install pipenv
