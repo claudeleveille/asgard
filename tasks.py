@@ -3,10 +3,6 @@ from functools import partial
 from invoke import task, run
 
 
-DOCKER_REPO = "claudeleveille/asgard"
-VERSION = "0.1.0rc1"
-
-
 sh = partial(run, echo=True)
 
 
@@ -27,10 +23,8 @@ def test(c):
 
 
 @task
-def build(c, docker=False):
+def build(c):
     sh("pyinstaller asgard.spec")
-    if docker:
-        sh(f"docker build --pull --tag {DOCKER_REPO}:{VERSION} .")
 
 
 @task
