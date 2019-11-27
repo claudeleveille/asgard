@@ -1,29 +1,37 @@
-name: PR
+name: Build
 
-on: pull_request
+on:
+  - push
+  - pull_request
 
 env:
   PIPENV_NOSPIN: "true"
 
 jobs:
-  test:
-    name: Test
+  build-linux-x86_64:
+    name: Build Linux x86_64 Binary
     runs-on: ubuntu-18.04
     container:
       image: python:3.7.4-slim-buster
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Test
+
+      - name: Build Binary
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
             build-essential \
             git \
             openssh-client
-          git --version
           git config --global user.name GitHub
           git config --global user.email github@github.com
           pip install pipenv
           pipenv sync --dev
           pipenv run inv check build test
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v1
+        with:
+          name: asgard-Linux-x86_64
+          path: dist/asgard
