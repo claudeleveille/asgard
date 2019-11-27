@@ -25,7 +25,6 @@ jobs:
             build-essential \
             git \
             openssh-client
-          git --version
           git config --global user.name GitHub
           git config --global user.email github@github.com
           pip install pipenv
