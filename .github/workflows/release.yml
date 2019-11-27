@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build-linux-x86_64:
+    name: Build Linux x86_64 Binary
+    runs-on: ubuntu-18.04
+    container:
+      image: python:3.7.4-slim-buster
+    steps:
+      - name: Build Binary
+        run: |
+          pip install pipenv
+          pipenv sync --dev
+          pipenv run inv build
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v1
+        with:
+          name: asgard-Linux-x86_64
+          path: dist/asgard
+
+  release:
+    name: Release
+    needs:
+      - build-linux-x86_64
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Download Binary (Linux-x86_64)
+        uses: actions/download-artifact@v1
+        with:
+          name: asgard-Linux-x86_64
+          path: dist/asgard-Linux-x86_64
+
+      - name: Upload Release Asset (Linux-x86_64)
+        id: upload-release-asset-linux-x86_64
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/asgard-Linux-x86_64
+          asset_name: asgard-Linux-x86_64
+          asset_content_type: application/octet-stream
