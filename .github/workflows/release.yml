@@ -27,8 +27,8 @@ jobs:
           name: asgard-Linux-x86_64
           path: dist/asgard
 
-  release:
-    name: Release
+  create-release:
+    name: Create Release
     needs:
       - build-linux-x86_64
     runs-on: ubuntu-18.04
@@ -44,6 +44,12 @@ jobs:
           draft: false
           prerelease: false
 
+  upload-release-asset-linux-x86_64:
+    name: Upload Release Asset (Linux-x86_64)
+    needs:
+      - create-release
+    runs-on: ubuntu-18.04
+    steps:
       - name: Download Binary (Linux-x86_64)
         uses: actions/download-artifact@v1
         with:
