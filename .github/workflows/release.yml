@@ -60,6 +60,8 @@ jobs:
           name: asgard-Linux-x86_64
           path: ./asgard-Linux-x86_64
 
+      - run: ls -Rlha ./asgard-Linux-x86_64
+
       - name: Upload Release Asset (Linux-x86_64)
         id: upload-release-asset-linux-x86_64
         uses: actions/upload-release-asset@v1.0.1
@@ -67,6 +69,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./asgard-Linux-x86_64
+          asset_path: ./asgard-Linux-x86_64/asgard
           asset_name: asgard-Linux-x86_64
           asset_content_type: application/octet-stream
