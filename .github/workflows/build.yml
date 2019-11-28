@@ -1,7 +1,6 @@
 name: Build
 
 on:
-  - push
   - pull_request
 
 env:
@@ -30,8 +29,26 @@ jobs:
           pipenv sync --dev
           pipenv run inv check build test
 
-      - name: Upload Binary
-        uses: actions/upload-artifact@v1
-        with:
-          name: asgard-Linux-x86_64
-          path: dist/asgard
+  build-linux-x86_64-merge-result:
+    name: Build Linux x86_64 Binary (Merge Result)
+    runs-on: ubuntu-18.04
+    container:
+      image: python:3.7.4-slim-buster
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Build Binary
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            build-essential \
+            git \
+            openssh-client
+          git config --global user.name GitHub
+          git config --global user.email github@github.com
+          git fetch origin
+          git merge origin/master
+          pip install pipenv
+          pipenv sync --dev
+          pipenv run inv check build test

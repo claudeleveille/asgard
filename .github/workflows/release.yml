@@ -1,9 +1,9 @@
-name: Release RC
+name: Release
 
 on:
   push:
     tags:
-      - v*rc*
+      - "*"
 
 env:
   PIPENV_NOSPIN: "true"
@@ -52,7 +52,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: false
-          prerelease: true
+          prerelease: false
 
   upload-release-asset-linux-x86_64:
     name: Upload Release Asset (Linux-x86_64)
