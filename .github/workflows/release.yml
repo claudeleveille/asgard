@@ -60,8 +60,6 @@ jobs:
           name: asgard-Linux-x86_64
           path: ./asgard-Linux-x86_64
 
-      - run: ls -Rlha ./asgard-Linux-x86_64
-
       - name: Upload Release Asset (Linux-x86_64)
         id: upload-release-asset-linux-x86_64
         uses: actions/upload-release-asset@v1.0.1
