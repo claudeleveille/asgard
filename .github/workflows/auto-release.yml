@@ -7,6 +7,8 @@ on:
 
 env:
   ASGARD_VER: "0.1.0"
+  GIT_USER_NAME: Claude-bot
+  GIT_USER_EMAIL: github-actions-asgard@nerdin.space
 
 jobs:
   auto-release:
@@ -16,6 +18,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
+      - name: Build Binary
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            build-essential \
+            git \
+            openssh-client
+          git config --global user.name "$GIT_USER_NAME"
+          git config --global user.email "$GIT_USER_EMAIL"
+          pip install pipenv
+          pipenv sync --dev
+          pipenv run inv check build test
+
       - name: Auto-release
         run: |
           curl -sSLo /usr/local/bin/asgard --retry 10 \
@@ -23,8 +38,8 @@ jobs:
           chmod +x /usr/local/bin/asgard
           asgard --version
 
-          git config --global user.name GitHub
-          git config --global user.email github@github.com
+          git config --global user.name "$GIT_USER_NAME"
+          git config --global user.email "$GIT_USER_EMAIL"
 
           for i in {1..10}; do
             asgard --tag
