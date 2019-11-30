@@ -57,7 +57,7 @@ def get_latest_tag_index(log):
 
 def infer_vnext(log, suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=False):
     latest_tag_index = get_latest_tag_index(log)
-    if latest_tag_index == None:
+    if latest_tag_index is None:
         if suffix:
             return SemVer(
                 0,
@@ -91,8 +91,12 @@ def infer_vnext(log, suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=Fa
                     major_bump = True
                 elif cc_msg_type == "feat":
                     minor_bump = True
-            except:
-                continue
+            except Exception as e:
+                print(
+                    f"WARNING: Commit '{commit['hash']}' did not have a Conventional Commits-compliant message.",
+                    file=sys.stderr,
+                )
+                print(e, file=sys.stderr)
         if major_bump:
             version.increment_major()
         elif minor_bump:

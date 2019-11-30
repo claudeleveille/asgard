@@ -13,7 +13,7 @@ def test_flags(flag):
     attr = flag.replace("--", "").replace("-", "_")
     a = parse_args([flag])
     a_defaults = parse_args([])
-    assert vars(a)[attr] == True and vars(a_defaults)[attr] == False
+    assert vars(a)[attr] is True and vars(a_defaults)[attr] is False
 
 
 @pytest.mark.parametrize(
@@ -121,7 +121,7 @@ def test_get_latest_tag_index():
     with GitRepo() as g:
         g.commit("test: test", allow_empty=True)
         g.commit("test: test2", allow_empty=True)
-        assert get_latest_tag_index(g.log()) == None
+        assert get_latest_tag_index(g.log()) is None
         g.tag("1.0.0")
         assert get_latest_tag_index(g.log()) == 1
 

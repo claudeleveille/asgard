@@ -34,9 +34,9 @@ def test_log_with_some_commits():
     with GitRepo() as g:
         for m in messages:
             g.commit(m, allow_empty=True)
-        l = g.log()
+        log = g.log()
         for i in range(len(messages)):
-            assert messages[i] == l[i]["message"]
+            assert messages[i] == log[i]["message"]
 
 
 @pytest.mark.parametrize(
@@ -76,8 +76,8 @@ def test_tagging():
         g.commit("test: test2", allow_empty=True)
         g.commit("test: test3", allow_empty=True)
         g.tag("1.0.0")
-        l = g.log()[2]
-        assert l["message"] == "test: test3" and l["tag"] == "1.0.0"
+        log = g.log()[2]
+        assert log["message"] == "test: test3" and log["tag"] == "1.0.0"
         g.commit("test: test4", allow_empty=True)
-        l = g.log()[3]
-        assert l["message"] == "test: test4" and "tag" not in l.keys()
+        log = g.log()[3]
+        assert log["message"] == "test: test4" and "tag" not in log.keys()
