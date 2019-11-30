@@ -42,7 +42,8 @@ jobs:
           git config --global user.email "$GIT_USER_EMAIL"
 
           git fetch origin
-          git merge origin/master
+          git checkout origin/master
+          git merge $GITHUB_REF
 
           pip install pipenv
           pipenv sync --dev
