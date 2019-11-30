@@ -71,7 +71,7 @@ def infer_vnext(log, suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=Fa
         else:
             return SemVer(0, 1, 0)
     else:
-        version = SemVer.fromstr(log[latest_tag_index]["tag"])
+        version = SemVer.fromstr(log[latest_tag_index]["tag"].replace("v", ""))
         if (
             version.isprerelease()
             and version.suffix_dash_prefix == suffix_dash_prefix
