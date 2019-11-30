@@ -85,11 +85,14 @@ def infer_vnext(log, suffix=None, suffix_dot_suffix=False, suffix_dash_prefix=Fa
             return version
         major_bump, minor_bump = False, False
         for commit in log[latest_tag_index + 1 :]:
-            cc_msg_type = ConventionalCommitMsg(commit["message"]).msg_type
-            if cc_msg_type == "BREAKING CHANGE":
-                major_bump = True
-            elif cc_msg_type == "feat":
-                minor_bump = True
+            try:
+                cc_msg_type = ConventionalCommitMsg(commit["message"]).msg_type
+                if cc_msg_type == "BREAKING CHANGE":
+                    major_bump = True
+                elif cc_msg_type == "feat":
+                    minor_bump = True
+            except:
+                continue
         if major_bump:
             version.increment_major()
         elif minor_bump:

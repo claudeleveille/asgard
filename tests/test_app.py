@@ -184,3 +184,11 @@ def test_version_inference_with_default_v_prefix():
         main(["--repo-path", g.repo_path, "--tag"])
         g.commit("fix: test", allow_empty=True)
         assert infer_vnext(g.log()) == "0.1.1"
+
+
+def test_version_inference_with_non_cc_commit_msg():
+    with GitRepo() as g:
+        g.commit("test", allow_empty=True)
+        g.tag("v0.1.0")
+        g.commit("test2", allow_empty=True)
+        assert infer_vnext(g.log()) == "0.1.1"
