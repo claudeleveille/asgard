@@ -20,10 +20,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Build Binary
+      - name: Test and auto-tag
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
+            ca-certificates \
+            curl \
             build-essential \
             git \
             openssh-client
@@ -33,8 +35,6 @@ jobs:
           pipenv sync --dev
           pipenv run inv check build test
 
-      - name: Auto-tag
-        run: |
           curl -sSLo /usr/local/bin/asgard --retry 10 \
           https://github.com/claudeleveille/asgard/releases/download/v$ASGARD_VER/asgard-$(uname -s)-$(uname -m)
           chmod +x /usr/local/bin/asgard
