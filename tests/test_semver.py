@@ -63,7 +63,6 @@ def test_equality(p1, p2, p3):
     [
         (SemVer(), SemVer(0, 1, 2)),
         (SemVer(13, 24, 24, False, suffix="rc", suffix_number="25"), "13.24.24rc24"),
-        ("1.0.1-rc.13", "13.1.3rc3"),
         (
             SemVer(1, 33, 15, True, "alpha", False, 23),
             SemVer(1, 33, 15, True, "mistake", 23),
