@@ -1,0 +1,40 @@
+name: Auto-release
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  ASGARD_VER: "0.1.0"
+
+jobs:
+  auto-release:
+    name: Auto-release
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Auto-release
+        run: |
+          curl -sSLo /usr/local/bin/asgard --retry 10 \
+          https://github.com/claudeleveille/asgard/releases/download/v$ASGARD_VER/asgard-$(uname -s)-$(uname -m)
+          chmod +x /usr/local/bin/asgard
+          asgard --version
+
+          git config --global user.name GitHub
+          git config --global user.email github@github.com
+
+          for i in {1..10}; do
+            asgard --tag
+            if [ "$?" = "0" ]; then
+              break
+            else
+              sleep 1
+              git fetch origin
+              git reset --hard origin/$GITHUB_REF
+            fi
+          done
+
+          git push --tags
