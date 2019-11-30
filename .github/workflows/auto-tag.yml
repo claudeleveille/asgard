@@ -1,4 +1,4 @@
-name: Auto-release
+name: Auto-tag
 
 on:
   push:
@@ -12,8 +12,10 @@ env:
 
 jobs:
   auto-release:
-    name: Auto-release
+    name: Auto-tag
     runs-on: ubuntu-18.04
+    container:
+      image: python:3.7.4-slim-buster
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -31,15 +33,12 @@ jobs:
           pipenv sync --dev
           pipenv run inv check build test
 
-      - name: Auto-release
+      - name: Auto-tag
         run: |
           curl -sSLo /usr/local/bin/asgard --retry 10 \
           https://github.com/claudeleveille/asgard/releases/download/v$ASGARD_VER/asgard-$(uname -s)-$(uname -m)
           chmod +x /usr/local/bin/asgard
           asgard --version
-
-          git config --global user.name "$GIT_USER_NAME"
-          git config --global user.email "$GIT_USER_EMAIL"
 
           for i in {1..10}; do
             asgard --tag
