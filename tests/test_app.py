@@ -65,28 +65,10 @@ def test_passing_help_flag_shows_usage(args, capsys):
 @pytest.mark.parametrize(
     "suffix,suffix_dot_suffix,suffix_dash_prefix,semver",
     [
-        (None, False, False, SemVer(0, 1, 0)),
-        ("rc", False, False, SemVer(0, 1, 0, suffix="rc", suffix_number=1)),
-        (
-            "rc",
-            False,
-            True,
-            SemVer(0, 1, 0, suffix="rc", suffix_number=1, suffix_dash_prefix=True),
-        ),
-        (
-            "rc",
-            True,
-            True,
-            SemVer(
-                0,
-                1,
-                0,
-                suffix="rc",
-                suffix_number=1,
-                suffix_dash_prefix=True,
-                suffix_dot_suffix=True,
-            ),
-        ),
+        (None, False, False, "0.1.0"),
+        ("rc", False, False, "0.1.0rc1"),
+        ("rc", False, True, "0.1.0-rc1"),
+        ("rc", True, True, "0.1.0-rc.1"),
     ],
 )
 def test_infers_first_version(suffix, suffix_dot_suffix, suffix_dash_prefix, semver):
