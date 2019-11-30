@@ -176,3 +176,11 @@ def test_main_release_tag_no_commit(capsys):
         assert c.out == "0.1.0\n"
         assert g.log()[0]["message"] == "feat: initial commit"
         assert g.log()[0]["tag"] == "v0.1.0"
+
+
+def test_version_inference_with_default_v_prefix():
+    with GitRepo() as g:
+        g.commit("feat: test", allow_empty=True)
+        main(["--repo-path", g.repo_path, "--tag"])
+        g.commit("fix: test", allow_empty=True)
+        assert infer_vnext(g.log()) == "0.1.1"
