@@ -76,7 +76,7 @@ class SemVer:
         self.suffix_number += 1
 
     def isprerelease(self):
-        if self.suffix != None:
+        if self.suffix is not None:
             return True
         return False
 

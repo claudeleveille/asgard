@@ -7,9 +7,8 @@ verify_ssl = true
 black = "==19.3b0"
 pytest = "*"
 pytest-cov = "*"
-pyflakes = "*"
-invoke = "*"
 pyinstaller = "*"
+flake8 = "*"
 
 [packages]
 
