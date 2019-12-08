@@ -32,3 +32,9 @@ clean:
 
 fmt:
 	pipenv run black --verbose .
+
+prerelease: build-binary
+	if [ "$$(git branch --show-current |tr -d '\n')" = "master" ]; then \
+		./dist/asgard --commit --tag --prerelease-suffix rc; \
+		git push --follow-tags origin master; \
+	fi
