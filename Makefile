@@ -33,10 +33,13 @@ clean:
 fmt:
 	pipenv run black --verbose .
 
-release: build-binary
+release: clean build-binary
 	if [ "$$(git branch --show-current |tr -d '\n')" = "master" ]; then \
+		echo '__version__ = \"$$(./dist/asgard)\"' > asgard/_version.py; \
+		git add asgard/_version.py; \
 		./dist/asgard --commit --tag; \
-		git push --follow-tags origin master; \
+		git push origin master; \
+		git push --tags origin; \
 	else \
 		echo "Not releasing because current branch isn't master"; \
 	fi
