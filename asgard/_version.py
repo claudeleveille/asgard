@@ -1,1 +1,1 @@
-__version__ = \"$(./dist/asgard)\"
+__version__ = "0.1.5"
