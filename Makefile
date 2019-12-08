@@ -33,8 +33,10 @@ clean:
 fmt:
 	pipenv run black --verbose .
 
-prerelease: build-binary
+release: build-binary
 	if [ "$$(git branch --show-current |tr -d '\n')" = "master" ]; then \
-		./dist/asgard --commit --tag --prerelease-suffix rc; \
+		./dist/asgard --commit --tag; \
 		git push --follow-tags origin master; \
+	else \
+		echo "Not releasing because current branch isn't master"; \
 	fi
