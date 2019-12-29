@@ -1,3 +1,5 @@
+"""Entrypoint and core functions."""
+
 import argparse
 import os
 import sys
@@ -34,16 +36,46 @@ def main(args=sys.argv[1:]):
 
 
 def parse_args(args):
+    """Parses CLI right now (might add env var support later)."""
     parser = argparse.ArgumentParser()
-
-    parser.add_argument("--commit", action="store_true", default=False)
-    parser.add_argument("--tag", action="store_true", default=False)
-    parser.add_argument("--suffix-dot-suffix", action="store_true", default=False)
-    parser.add_argument("--suffix-dash-prefix", action="store_true", default=False)
-    parser.add_argument("--version", action="store_true", default=False)
-    parser.add_argument("--prerelease-suffix", default="")
-    parser.add_argument("--repo-path", default=os.getcwd())
-
+    parser.add_argument(
+        "--commit",
+        action="store_true",
+        default=False,
+        help="create release commit (--allow-empty is on; doesn't push)",
+    )
+    parser.add_argument(
+        "--tag",
+        action="store_true",
+        default=False,
+        help="create release tag (doesn't push)",
+    )
+    parser.add_argument(
+        "--suffix-dot-suffix",
+        action="store_true",
+        default=False,
+        help="add a dot between suffix and following version number",
+    )
+    parser.add_argument(
+        "--suffix-dash-prefix",
+        action="store_true",
+        default=False,
+        help="add a dash between semver micro and suffix",
+    )
+    parser.add_argument(
+        "--version",
+        action="store_true",
+        default=False,
+        help="print program version and exit",
+    )
+    parser.add_argument(
+        "--prerelease-suffix",
+        default="",
+        help="append a suffix to semver (useful for prereleases)",
+    )
+    parser.add_argument(
+        "--repo-path", default=os.getcwd(), help="git repo path (defaults to '.')"
+    )
     return parser.parse_args(args)
 
 
