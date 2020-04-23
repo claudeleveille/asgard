@@ -1,14 +1,15 @@
-# python
-__pycache__
-.pytest_cache
+# python poop
+__pycache__/
+.pytest_cache/
 *.egg-info
-build
-dist
+build/
+dist/
 .coverage
+.tox/
 
-# os
+# os poop
 .DS_Store
 
-# ide
-.idea
-.vscode
+# editor poop
+.idea/
+.vscode/
